@@ -2,7 +2,8 @@
 #Import "<std>"
 #Import "<mojo>"
 #Import "<chipmunk>"
-#Import "cpMojoDDrawer/cp_mojo_debugdraw.monkey2"
+'#Import "cpMojoDDrawer/cp_mojo_debugdraw.monkey2"
+#Import "chipmunkdebugger"
 
 
 Using std..
@@ -14,16 +15,15 @@ Global w_height:=700
 
 Class HelloChipmunk Extends Window
 
-	Field space:cpSpace Ptr
-	Field ground:cpShape Ptr
-	Field ballBody:=New cpBody Ptr[1600]
-	Field polyBody:=New cpBody Ptr[400]
-	Field ballShape:=New cpShape Ptr[1600]
-	Field polyShape:=New cpShape Ptr[400]
+	Field space:cpSpace 
+	Field ground:cpShape 
+	Field ballBody:=New cpBody [1600]
+	Field polyBody:=New cpBody [400]
+	Field ballShape:=New cpShape [1600]
+	Field polyShape:=New cpShape [400]
 	Field verts:cpVect[]
 	
-	Field options:cpSpaceDebugDrawOptions Ptr
-	Field opto:cpSpaceDebugDrawOptions
+	Field debugger:=New ChipmunkDebugger
 	
 	Field stepCount:=0
 	
@@ -65,10 +65,10 @@ Class HelloChipmunk Extends Window
   		
 		moment=cpMomentForCircle( mass,0,radius,cpvzero )
 		
-		ballBody[i+j*51]=cpSpaceAddBody( space,cpBodyNew( mass,moment ) )
-		cpBodySetPosition( ballBody[i+j*51],cpv( -90+i*2.2+j*0.2,-150+j*2.2 ) )
+		ballBody[i+j*51]=space.AddBody( cpBodyNew( mass,moment ) )
+		 ballBody[i+j*51].Position=cpv( -90+i*2.2+j*0.2,-150+j*2.2 ) 
 
-		ballShape[i+j*51]=cpSpaceAddShape( space,cpCircleShapeNew( ballBody[i+j*51],radius,cpvzero ) )
+		ballShape[i+j*51]=space.AddShape( cpCircleShapeNew( ballBody[i+j*51],radius,cpvzero ) )
 		cpShapeSetFriction( ballShape[i+j*51],0.1 )
 		cpShapeSetElasticity ( ballShape[i+j*51],0.0+Rnd(0.002) ) 'rnd is for colors, colors are based on elastcity for now but should be a mix of all properties
 		Next
@@ -93,19 +93,21 @@ Class HelloChipmunk Extends Window
 		polyBody[i+j*20] = cpSpaceAddBody(space, cpBodyNew(mass, cpMomentForPoly(mass, NUM_VERTS, Varptr verts[0], cpvzero, 0.0)))
 		cpBodySetPosition(polyBody[i+j*20], cpv(-100.0+i*6.5, -220.0+j*6.5))
 		
-		polyShape[i+j*20]=cpSpaceAddShape(space, cpPolyShapeNew(polyBody[i+j*20], NUM_VERTS, Varptr verts[0], cpTransformIdentity, 0.0))
+		polyShape[i+j*20]=cpSpaceAddShape(space, cpPolyShapeNew(polyBody[i+j*20], NUM_VERTS, verts.Data, cpTransformIdentity, 0.0))
 		cpShapeSetFriction( polyShape[i+j*20],0.1 )
 		cpShapeSetElasticity ( polyShape[i+j*20],0.0+Rnd(0.002) ) 'rnd is for colors, colors are based on elastcity for now but should be a mix of all properties (mass,moment,friction,elsticity,...)
 		
 		Next
 		next
 		
+		
+		
 		'
 		'  ---- Debug draw setup
 		'
 		
-		CP_DEBUG_DRAWER.options.flags=CP_SPACE_DEBUG_DRAW_SHAPES ' by default there is also constrains and contact points
-		CP_DEBUG_DRAWER.FastDraft(True) 'Set to true to get a less beautifull but faster render
+		'CP_DEBUG_DRAWER.options.flags=CP_SPACE_DEBUG_DRAW_SHAPES ' by default there is also constrains and contact points
+		'CP_DEBUG_DRAWER.FastDraft(True) 'Set to true to get a less beautifull but faster render
 		
 	End
 	
@@ -116,15 +118,28 @@ Class HelloChipmunk Extends Window
 		
 		
 		'It is *highly* recommended to use a fixed size time step.
-		Local timeStep:=1.0/60.0
+		'Local timeStep:=1.0/60.0
 		
-		cpSpaceStep( space,timeStep )
-		stepCount=stepCount+1
+		'cpSpaceStep( space,timeStep )
+		'stepCount=stepCount+1
+		'		App.RequestRender()
+	
+		Const timeStep:=1.0/60.0
 		
-		CP_DEBUG_DRAWER.SetCanvas(canvas)
-		CP_DEBUG_DRAWER.SetCamera(cpv(-50,-120),3.5)
-		cpSpaceDebugDraw(space,Varptr CP_DEBUG_DRAWER.options)
-		canvas.Color=Color.White
+		space.StepTime( timeStep )
+		
+'		Local rot:=ballBody.Rotation
+'		Local pos:=ballBody.Position
+'		Local vel:=ballBody.Velocity
+'		Print "ball rot="+ATan2( rot.y,rot.x )+", pos.x="+pos.x+", pos.y="+pos.y+", vel.x="+vel.x+", vel.y="+vel.y
+		
+		canvas.Translate( Width/2,Height/2 )
+		
+		debugger.DebugDraw( canvas,space )
+		'CP_DEBUG_DRAWER.SetCanvas(canvas)
+		'CP_DEBUG_DRAWER.SetCamera(cpv(-50,-120),3.5)
+		'cpSpaceDebugDraw(space,Varptr CP_DEBUG_DRAWER.options)
+		'canvas.Color=Color.White
 		canvas.DrawText("FPS: "+App.FPS,10,10)
 		canvas.DrawText("step: "+stepCount,10,40)
 		
