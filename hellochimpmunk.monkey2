@@ -1,9 +1,9 @@
-
 #Import "<std>"
 #Import "<mojo>"
 #Import "<chipmunk>"
 
-#Import "chipmunkdebugger"
+'#Import "chipmunkdebugger"
+#Import "chipmunkdebugdraw"
 
 Using std..
 Using mojo..
@@ -34,6 +34,8 @@ Class HelloChipmunk Extends Window
 	
 	Method New()
 	
+		'debugger.FastDraw()
+		
 		ClearColor=Color.Black
 
 		'Create a new space and set its gravity to 100
@@ -193,6 +195,9 @@ Class HelloChipmunk Extends Window
 			mouseJoint = Null
 		Endif
 		' End of mouseJoint process
+		
+		If Keyboard.KeyDown(Key.F) Then debugger.FastDraw()
+		If Keyboard.KeyDown(Key.C) Then debugger.CompleteDraw()
 	
 	End
 

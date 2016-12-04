@@ -2,8 +2,9 @@
 #Import "<std>"
 #Import "<mojo>"
 #Import "<chipmunk>"
-'#Import "cpMojoDDrawer/cp_mojo_debugdraw.monkey2"
-#Import "chipmunkdebugger"
+
+#Import "chipmunkdebugdraw"
+'#Import "chipmunkdebugger"
 
 
 Using std..
@@ -27,9 +28,10 @@ Class HelloChipmunk Extends Window
 	
 	Field stepCount:=0
 	
-	'Field MyDDrawer:
-	
-	'Field DDCircle:cp_mojo_DDrawCircle()
+	Field zoom:=4.1
+	Field angle:=0.0
+	Field cx:=15.0
+	Field cy:=-100.0
 	
 	Method New( title:String,width:Int,height:Int,flags:WindowFlags=WindowFlags.Resizable )
 				
@@ -93,57 +95,45 @@ Class HelloChipmunk Extends Window
 		polyBody[i+j*20] = cpSpaceAddBody(space, cpBodyNew(mass, cpMomentForPoly(mass, NUM_VERTS, Varptr verts[0], cpvzero, 0.0)))
 		cpBodySetPosition(polyBody[i+j*20], cpv(-100.0+i*6.5, -220.0+j*6.5))
 		
-		polyShape[i+j*20]=cpSpaceAddShape(space, cpPolyShapeNew(polyBody[i+j*20], NUM_VERTS, verts.Data, cpTransformIdentity, 0.0))
+		polyShape[i+j*20]=cpSpaceAddShape(space, cpPolyShapeNew(polyBody[i+j*20], NUM_VERTS, verts.Data, cpTransformIdentity, 0.05*j))
 		cpShapeSetFriction( polyShape[i+j*20],0.1 )
 		cpShapeSetElasticity ( polyShape[i+j*20],0.0+Rnd(0.002) ) 'rnd is for colors, colors are based on elastcity for now but should be a mix of all properties (mass,moment,friction,elsticity,...)
 		
 		Next
-		next
-		
-		
-		
-		'
-		'  ---- Debug draw setup
-		'
-		
-		'CP_DEBUG_DRAWER.options.flags=CP_SPACE_DEBUG_DRAW_SHAPES ' by default there is also constrains and contact points
-		'CP_DEBUG_DRAWER.FastDraft(True) 'Set to true to get a less beautifull but faster render
+		Next
 		
 	End
 	
-	Method OnRender( canvas:Canvas ) Override
-	
+	Method OnRender( canvas:Canvas ) Override	
 	
 		App.RequestRender()
+
+		canvas.DrawText("FPS: "+App.FPS,10,10)
+		canvas.DrawText("step: "+stepCount,10,22)
 		
+		canvas.DrawText( "Zoom: "+zoom,10,44 )
+		canvas.DrawText( "Cpnt: "+cx+";"+cy,10,66)
 		
-		'It is *highly* recommended to use a fixed size time step.
-		'Local timeStep:=1.0/60.0
+
+		If Keyboard.KeyDown(Key.F) Then debugger.FastDraw()
+		If Keyboard.KeyDown(Key.C) Then debugger.CompleteDraw()
 		
-		'cpSpaceStep( space,timeStep )
-		'stepCount=stepCount+1
-		'		App.RequestRender()
-	
+		If Keyboard.KeyDown(Key.Z) Then zoom=zoom*1.01
+		If Keyboard.KeyDown(Key.S) Then zoom=zoom/1.01
+		If Keyboard.KeyDown(Key.Up) Then cy=cy-5.0
+		If Keyboard.KeyDown(Key.Down) Then cy=cy+5.0
+		If Keyboard.KeyDown(Key.Left) Then cx=cx-5.0
+		If Keyboard.KeyDown(Key.Right) Then cx=cx+5.0
+		If Keyboard.KeyDown(Key.Space) Then angle=angle+0.01
+		If Keyboard.KeyDown(Key.R) Then angle=0.0
+		
+		canvas.SetCamera(cx,cy,zoom,angle)
+		
 		Const timeStep:=1.0/60.0
-		
 		space.StepTime( timeStep )
 		
-'		Local rot:=ballBody.Rotation
-'		Local pos:=ballBody.Position
-'		Local vel:=ballBody.Velocity
-'		Print "ball rot="+ATan2( rot.y,rot.x )+", pos.x="+pos.x+", pos.y="+pos.y+", vel.x="+vel.x+", vel.y="+vel.y
-		
-		canvas.Translate( Width/2,Height/2 )
-		
 		debugger.DebugDraw( canvas,space )
-		'CP_DEBUG_DRAWER.SetCanvas(canvas)
-		'CP_DEBUG_DRAWER.SetCamera(cpv(-50,-120),3.5)
-		'cpSpaceDebugDraw(space,Varptr CP_DEBUG_DRAWER.options)
-		'canvas.Color=Color.White
-		canvas.DrawText("FPS: "+App.FPS,10,10)
-		canvas.DrawText("step: "+stepCount,10,40)
-		
-		
+			
 	End
 	
 	Method Cleanup()	'Yeah, right!
