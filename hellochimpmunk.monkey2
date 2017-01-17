@@ -105,8 +105,8 @@ Class HelloChipmunk Extends Window
 		
 		'Now a pentagon...
 		mass=0.3
-		radius=30.0 'the radius of the rounded corner of the polygon
-		Local cornerRadius:=3.0
+		radius=30.0 'the radius of the pentagon
+		Local cornerRadius:=3.0 'the radius of the added rounded corners
 		
 		Local NUM_VERTS:=5
 		Local verts:=New cpVect[NUM_VERTS]
