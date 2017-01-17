@@ -23,7 +23,7 @@ Class ChipmunkDebugger
 		
 		options.shapeOutlineColor=RGBAColor(200.0/255.0, 210.0/255.0, 230.0/255.0, 1.0)
 		options.constraintColor=RGBAColor(0.0, 0.75, 0.0, 1.0)
-		options.collisionPointColor=RGBAColor(1.0, 1.0, 0.0, 1.0)
+		options.collisionPointColor=RGBAColor(1.0, 0.0, 0.0, 1.0)
 		
 	End
 	
@@ -52,7 +52,7 @@ Class ChipmunkDebugger
 		options.drawPolygon=DrawPolygon
 		options.drawDot=DrawDot
 		options.colorForShape=ColorForShape
-		options.flags=CP_SPACE_DEBUG_DRAW_SHAPES '|CP_SPACE_DEBUG_DRAW_CONSTRAINTS|CP_SPACE_DEBUG_DRAW_COLLISION_POINTS
+		options.flags=CP_SPACE_DEBUG_DRAW_SHAPES |CP_SPACE_DEBUG_DRAW_CONSTRAINTS|CP_SPACE_DEBUG_DRAW_COLLISION_POINTS
 	End
 	
 	Protected

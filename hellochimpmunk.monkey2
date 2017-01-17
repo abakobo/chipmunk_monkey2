@@ -1,9 +1,17 @@
+
+
+'this demo contains all shape types, a mouse joint with a distance query and a collision call back
+
 #Import "<std>"
 #Import "<mojo>"
 #Import "<chipmunk>"
 
+
+'Mark's debugdraw
 '#Import "chipmunkdebugger"
-#Import "chipmunkdebugdraw"
+
+ 'my debug draw with complete/fast option, camera using matrix, rounded end fatSegment and rounded corner polys (still WIP though)
+#Import "chipmunkdebugdraw" 
 
 Using std..
 Using mojo..
@@ -31,10 +39,12 @@ Class HelloChipmunk Extends Window
 	Field mouseJoint:cpConstraint=Null 'initialised with Null to have consitent test on its existence
 	
 	Field debugger:=New ChipmunkDebugger
+
 	
 	Method New()
 	
-		'debugger.FastDraw()
+		debugger.CompleteDraw() 'Fast draw enabled by default Complete shows sleep outline color, fill color, contacts, joints
+		
 		
 		ClearColor=Color.Black
 
@@ -95,7 +105,7 @@ Class HelloChipmunk Extends Window
 		
 		'Now a pentagon...
 		mass=0.3
-		radius=30.0
+		radius=30.0 'the radius of the rounded corner of the polygon
 		Local cornerRadius:=3.0
 		
 		Local NUM_VERTS:=5

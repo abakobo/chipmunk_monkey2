@@ -9,21 +9,29 @@ Using chipmunk..
 
 Class ChipmunkDebugger
 
+	Field options:=New cpSpaceDebugDrawOptions
+	
+	Field scale:=1.0
+	Field viewpoint:=cpv(0,0)
+	Field w:=640
+	Field h:=480
+	Field y_axis_direction:=1
+
 	Method New()
-		_options.drawCircle=DrawCircle
-		_options.drawSegment=DrawSegment
-		_options.drawFatSegment=DrawFatSegment
-		_options.drawPolygon=DrawPolygon
-		_options.drawDot=DrawDot
-		_options.colorForShape=ColorForShape
-		_options.flags=CP_SPACE_DEBUG_DRAW_SHAPES '|CP_SPACE_DEBUG_DRAW_CONSTRAINTS|CP_SPACE_DEBUG_DRAW_COLLISION_POINTS
+		options.drawCircle=DrawCircle
+		options.drawSegment=DrawSegment
+		options.drawFatSegment=DrawFatSegment
+		options.drawPolygon=DrawPolygon
+		options.drawDot=DrawDot
+		options.colorForShape=ColorForShape
+		options.flags=CP_SPACE_DEBUG_DRAW_SHAPES '|CP_SPACE_DEBUG_DRAW_CONSTRAINTS|CP_SPACE_DEBUG_DRAW_COLLISION_POINTS
 	End
 	
 	Method DebugDraw( canvas:Canvas,space:cpSpace )
 	
 		_canvas=canvas
 	
-		cpSpaceDebugDraw( space,_options )
+		cpSpaceDebugDraw( space,options )
 	End
 	
 	Protected
@@ -33,10 +41,6 @@ Class ChipmunkDebugger
 		_canvas.Color=New Color( fillColor.r,fillColor.g,fillColor.b,fillColor.a )
 		
 		_canvas.DrawCircle( pos.x,pos.y,radius )
-		
-		_canvas.Color=Color.Black
-		
-		_canvas.DrawLine( pos.x,pos.y,pos.x+Cos( angle )*radius,pos.y+Sin( angle )*radius )
 	End
 	
 	Method DrawSegment( a:cpVect,b:cpVect,color:cpSpaceDebugColor,data:cpDataPointer )
@@ -94,8 +98,6 @@ Class ChipmunkDebugger
 	End
 	
 	Private
-	
-	Field _options:=New cpSpaceDebugDrawOptions
 	
 	Field _colors:=New Map<cpShape,cpSpaceDebugColor>
 

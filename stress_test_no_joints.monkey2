@@ -4,7 +4,6 @@
 #Import "<chipmunk>"
 
 #Import "chipmunkdebugdraw"
-'#Import "chipmunkdebugger"
 
 
 Using std..
@@ -108,31 +107,32 @@ Class HelloChipmunk Extends Window
 	
 		App.RequestRender()
 
-		canvas.DrawText("FPS: "+App.FPS,10,10)
-		canvas.DrawText("step: "+stepCount,10,22)
-		
-		canvas.DrawText( "Zoom: "+zoom,10,44 )
-		canvas.DrawText( "Cpnt: "+cx+";"+cy,10,66)
-		
+		canvas.DrawText("FPS: "+App.FPS,10,10)		
+		canvas.DrawText( "Zoom (I & O Keys): "+zoom,10,30 )
+		canvas.DrawText( "Center point (Cursor Keys): "+cx+";"+cy,10,50)
+		canvas.DrawText( "Space: Rotate camera (not gravity!) R: reset rotation",10,70)		
+		canvas.DrawText ( "F: FastDraw  / C: CompleteDraw",10,90)
 
 		If Keyboard.KeyDown(Key.F) Then debugger.FastDraw()
 		If Keyboard.KeyDown(Key.C) Then debugger.CompleteDraw()
+	
 		
-		If Keyboard.KeyDown(Key.Z) Then zoom=zoom*1.01
-		If Keyboard.KeyDown(Key.S) Then zoom=zoom/1.01
+		If Keyboard.KeyDown(Key.I) Then zoom=zoom*1.01
+		If Keyboard.KeyDown(Key.O) Then zoom=zoom/1.01
 		If Keyboard.KeyDown(Key.Up) Then cy=cy-5.0
 		If Keyboard.KeyDown(Key.Down) Then cy=cy+5.0
 		If Keyboard.KeyDown(Key.Left) Then cx=cx-5.0
 		If Keyboard.KeyDown(Key.Right) Then cx=cx+5.0
 		If Keyboard.KeyDown(Key.Space) Then angle=angle+0.01
 		If Keyboard.KeyDown(Key.R) Then angle=0.0
-		
+				
 		canvas.SetCamera(cx,cy,zoom,angle)
 		
 		Const timeStep:=1.0/60.0
 		space.StepTime( timeStep )
 		
 		debugger.DebugDraw( canvas,space )
+		
 			
 	End
 	
