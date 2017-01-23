@@ -1,6 +1,6 @@
 
 
-'this demo contains all shape types, a mouse joint with a distance query, a collision call back, and a BB query with a callBack function
+'this demo contains all shape types, a mouse joint with a distance query, a collision handler, and a BBQuery with a callBack function using UserData
 '
 ' it needs to be cleared and better documented, some features could be split in several demo for better readability..
 
@@ -20,7 +20,7 @@ Using mojo..
 Using chipmunk..
 
 
-
+'definition of the BoundingBox, using a Recti so it can be drawn easily
 Global BBR:=New Recti (-105,10,-95,20)
 Global BB:=cpBBNew(BBR.Left,BBR.Bottom,BBR.Right,BBR.Top)
 
@@ -232,6 +232,8 @@ Class HelloChipmunk Extends Window
 	Method OnRender( canvas:Canvas ) Override
 	
 		App.RequestRender()
+		
+		canvas.DrawText ("You can grab the objects with your mouse. C: Complete Draw F:Faster/Cleaner draw",10,10)
 	
 		Const timeStep:=1.0/60.0
 		
